@@ -2,9 +2,7 @@ package com.robertkiszelirk.popularmovies.uianddata;
 
 import android.view.View;
 
-/**
- * Created by kiszeli on 2/18/18.
- */
+/** SetVisibility is responsible to change any views visibility to INVISIBLE or VISIBLE */
 
 public class SetVisibility {
 

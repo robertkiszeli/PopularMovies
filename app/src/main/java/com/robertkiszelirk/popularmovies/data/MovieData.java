@@ -1,33 +1,37 @@
 package com.robertkiszelirk.popularmovies.data;
 
-/**
- * Created by kiszeli on 2/18/18.
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/** MovieData is responsible to store one movie data, that is needed.
+ *  The Parcelable is required to pass the MovieData object from MoviesList
+ *  to MovieDetails.
  */
 
-public class MovieData {
+public class MovieData implements Parcelable {
 
     private int id;
 
-    private long voteAverage;
+    private double voteAverage;
 
     private String title;
     private String posterPath;
+    private String backdropPath;
     private String overview;
     private String releaseDate;
 
-    public MovieData(){
-    }
-
-    public MovieData(int id,
-                     long voteAverage,
-                     String title,
-                     String posterPath,
-                     String overview,
-                     String releaseDate){
+    MovieData(int id,
+              double voteAverage,
+              String title,
+              String posterPath,
+              String backdropPath,
+              String overview,
+              String releaseDate){
         this.id = id;
         this.voteAverage = voteAverage;
         this.title = title;
         this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
         this.overview = overview;
         this.releaseDate = releaseDate;
     }
@@ -40,11 +44,11 @@ public class MovieData {
         this.id = id;
     }
 
-    public long getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(long voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
@@ -64,6 +68,14 @@ public class MovieData {
         this.posterPath = posterPath;
     }
 
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
     public String getOverview() {
         return overview;
     }
@@ -79,4 +91,42 @@ public class MovieData {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    private MovieData(Parcel in) {
+        id = in.readInt();
+        voteAverage = in.readDouble();
+        title = in.readString();
+        posterPath = in.readString();
+        backdropPath = in.readString();
+        overview = in.readString();
+        releaseDate = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeDouble(voteAverage);
+        dest.writeString(title);
+        dest.writeString(posterPath);
+        dest.writeString(backdropPath);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+    }
+
+    public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
+        @Override
+        public MovieData createFromParcel(Parcel in) {
+            return new MovieData(in);
+        }
+
+        @Override
+        public MovieData[] newArray(int size) {
+            return new MovieData[size];
+        }
+    };
 }

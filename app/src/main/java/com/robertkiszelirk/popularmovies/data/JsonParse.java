@@ -6,13 +6,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by kiszeli on 2/19/18.
- */
+/** JsonParse is responsible to parse the JSON strings to object[s] */
 
-public class JsonParse {
+class JsonParse {
 
-    public static ArrayList<MovieData> jsonParseForMoviesList(String jsonString) throws JSONException{
+    /** Parse the JSON string to ArrayList<MovieData> to store the movies required data
+     * and returns the list */
+    static ArrayList<MovieData> jsonParseForMoviesList(String jsonString) throws JSONException{
 
         ArrayList<MovieData> moviesList = new ArrayList<>();
 
@@ -26,9 +26,10 @@ public class JsonParse {
 
             MovieData movieData = new MovieData(
                             movie.getInt("id"),
-                            movie.getLong("vote_average"),
+                            movie.getDouble("vote_average"),
                             movie.getString("title"),
                             movie.getString("poster_path"),
+                            movie.getString("backdrop_path"),
                             movie.getString("overview"),
                             movie.getString("release_date")
                     );

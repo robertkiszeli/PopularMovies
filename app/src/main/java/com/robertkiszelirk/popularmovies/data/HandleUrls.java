@@ -1,10 +1,7 @@
 package com.robertkiszelirk.popularmovies.data;
 
-import android.app.Application;
 import android.net.Uri;
-
 import com.robertkiszelirk.popularmovies.BuildConfig;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -12,13 +9,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-/**
- * Created by kiszeli on 2/19/18.
- */
+/** HandleUrls is responsible to create and use URLs */
 
 public class HandleUrls {
 
-    public static URL createMovieListUrl(String selectingType){
+    /** Method to create any downloadable image with a width of 500, from the imagePath */
+    public static String createImageUrl(String imagePath){
+        return "https://image.tmdb.org/t/p/w500" + imagePath;
+    }
+
+    /** Create movies list url based on selectingType string("popular","top_rated")*/
+    static URL createMovieListUrl(String selectingType){
 
         URL movieListUrl = null;
 
@@ -39,7 +40,8 @@ public class HandleUrls {
         return movieListUrl;
     }
 
-    public static String getJsonDataFromHttpResponse(URL url) throws IOException{
+    /** Returns the JSON String from a HttpURLConnection */
+    static String getJsonDataFromHttpResponse(URL url) throws IOException{
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {

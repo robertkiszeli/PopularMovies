@@ -1,7 +1,12 @@
-package com.robertkiszelirk.popularmovies.data;
+package com.robertkiszelirk.popularmovies.data.AsyncTasks;
 
 import android.os.AsyncTask;
-import com.robertkiszelirk.popularmovies.uianddata.AsyncResponse;
+
+import com.robertkiszelirk.popularmovies.data.HandleUrls;
+import com.robertkiszelirk.popularmovies.data.JsonParse;
+import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
+import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForMoviesList;
+
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -12,16 +17,18 @@ import java.util.ArrayList;
 public class GetMoviesData extends AsyncTask<String, Void, ArrayList<MovieData>> {
 
     // Interface to pass movies list back to MovieList activity
-    private AsyncResponse delegate = null;
+    private AsyncResponseForMoviesList delegate = null;
 
-    /** Get AsyncResponse from MovieList */
-    public GetMoviesData(AsyncResponse delegate){
+    /** Get AsyncResponseForMoviesList from MovieList */
+    public GetMoviesData(AsyncResponseForMoviesList delegate){
         this.delegate = delegate;
     }
 
     /** Get movies data from API */
     @Override
     protected ArrayList<MovieData> doInBackground(String... strings) {
+
+        ArrayList<MovieData> moviesList;
 
         // Create the URL based on the passed string[0]
         URL moviesDataUrl = HandleUrls.createMovieListUrl(strings[0]);
@@ -30,7 +37,9 @@ public class GetMoviesData extends AsyncTask<String, Void, ArrayList<MovieData>>
             // Get JSON from HttpURLConnection
             String moviesJsonData = HandleUrls.getJsonDataFromHttpResponse(moviesDataUrl);
             // Return the movie data in an ArrayList<MovieData>
-            return JsonParse.jsonParseForMoviesList(moviesJsonData);
+            moviesList = JsonParse.jsonParseForMoviesList(moviesJsonData);
+
+            return moviesList;
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -40,7 +49,7 @@ public class GetMoviesData extends AsyncTask<String, Void, ArrayList<MovieData>>
     /** When background task finished, the ArrayList<MovieData> passed back to MovieList */
     @Override
     protected void onPostExecute(ArrayList<MovieData> moviesList) {
-        delegate.processFinishData(moviesList);
+        delegate.processFinishMovieData(moviesList);
     }
 
 }

@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight">
+    android:background="@color/colorPrimaryLight"
+    android:paddingBottom="30dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -103,6 +104,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_vote_star" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_trailer"
+            android:layout_width="@dimen/movie_trailer_recycler_view_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/movie_trailer_recycler_view_margin_end"
+            android:textAlignment="center"
+            android:textSize="@dimen/movie_trailer_recycler_view_text_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/movie_detail_overview"
+            app:layout_constraintTop_toBottomOf="@+id/movie_detail_date" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_reviews"
+            android:layout_width="@dimen/movie_review_recycler_view_width"
+            android:layout_height="@dimen/movie_review_recycler_view_height"
+            android:textAlignment="center"
+            android:textSize="@dimen/movie_review_recycler_view_text_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/movie_detail_overview"
+            app:layout_constraintTop_toBottomOf="@+id/movie_trailer"
+            android:layout_marginTop="@dimen/movie_review_recycler_view_margin_top"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginEnd="@dimen/movie_review_recycler_view_margin_end"
+            android:visibility="gone"/>
 
     </android.support.constraint.ConstraintLayout>
 

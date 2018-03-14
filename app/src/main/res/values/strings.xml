@@ -11,6 +11,6 @@
     <string name="options_menu_popular_movies_text">Popular Movies</string>
     <string name="options_menu_top_rated_movies_text">Top Rated Movies</string>
     <string name="movie_list_no_connection_text">No Internet Connection.\nTurn on connection\nand  restart application.</string>
-    <string name="movie_detail_no_connection_text">No Internet Connection.\nTurn on connection\nand  restart application.</string>
+    <string name="movie_detail_no_connection_text">No Internet Connection.\nTurn on connection and  restart application.</string>
     <string name="permission_denied_toast_text">Permission required for application to work properly</string>
 </resources>

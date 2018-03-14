@@ -1,18 +1,22 @@
-package com.robertkiszelirk.popularmovies.uianddata;
+package com.robertkiszelirk.popularmovies.uianddata.Adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.robertkiszelirk.popularmovies.R;
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
-import com.robertkiszelirk.popularmovies.data.MovieData;
+import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
 import com.robertkiszelirk.popularmovies.userinterface.MovieDetails;
 
 import java.util.ArrayList;
@@ -24,10 +28,13 @@ import java.util.ArrayList;
 
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder> {
 
+    private Context context;
+
     //Passed movies list
     private ArrayList<MovieData> moviesList;
 
-    public MoviesRecyclerAdapter(ArrayList<MovieData> moviesList){
+    public MoviesRecyclerAdapter(Context context,ArrayList<MovieData> moviesList){
+        this.context = context;
         this.moviesList = moviesList;
     }
 
@@ -67,16 +74,31 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             posterImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), MovieDetails.class);
-                    MovieData currentMovieDetails = moviesList.get(getAdapterPosition());
-                    // Add actual movie data to intent
-                    intent.putExtra(view.getContext().getString(R.string.passing_movie_parcelable_key),currentMovieDetails);
-                    // Set animation between the two activity
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) view.getContext(),posterImage,"animated");
-                    // Start MovieDetails activity
-                    view.getContext().startActivity(intent,options.toBundle());
+                    // Check internet connection
+                    if(checkInternetConnection()) {
+                        Intent intent = new Intent(view.getContext(), MovieDetails.class);
+                        MovieData currentMovieDetails = moviesList.get(getAdapterPosition());
+                        // Add actual movie data to intent
+                        intent.putExtra(view.getContext().getString(R.string.passing_movie_parcelable_key), currentMovieDetails);
+                        // Set animation between the two activity
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) view.getContext(), posterImage, "animated");
+                        // Start MovieDetails activity
+                        view.getContext().startActivity(intent, options.toBundle());
+                    }else{
+                        Toast.makeText(context,"No internet connection.",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
     }
+
+    private boolean checkInternetConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }

@@ -1,7 +1,9 @@
-package com.robertkiszelirk.popularmovies.data;
+package com.robertkiszelirk.popularmovies.data.ModelData;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
 
 /** MovieData is responsible to store one movie data, that is needed.
  *  The Parcelable is required to pass the MovieData object from MoviesList
@@ -20,13 +22,18 @@ public class MovieData implements Parcelable {
     private String overview;
     private String releaseDate;
 
-    MovieData(int id,
+    private ArrayList<String> trailers = new ArrayList<>();
+    private ArrayList<ReviewData> reviews = new ArrayList<>();
+
+    public MovieData(int id,
               double voteAverage,
               String title,
               String posterPath,
               String backdropPath,
               String overview,
-              String releaseDate){
+              String releaseDate,
+              ArrayList<String> trailers,
+              ArrayList<ReviewData> reviews){
         this.id = id;
         this.voteAverage = voteAverage;
         this.title = title;
@@ -34,6 +41,8 @@ public class MovieData implements Parcelable {
         this.backdropPath = backdropPath;
         this.overview = overview;
         this.releaseDate = releaseDate;
+        this.trailers = trailers;
+        this.reviews = reviews;
     }
 
     public int getId() {
@@ -92,14 +101,20 @@ public class MovieData implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    private MovieData(Parcel in) {
-        id = in.readInt();
-        voteAverage = in.readDouble();
-        title = in.readString();
-        posterPath = in.readString();
-        backdropPath = in.readString();
-        overview = in.readString();
-        releaseDate = in.readString();
+    public ArrayList<String> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(ArrayList<String> trailers) {
+        this.trailers = trailers;
+    }
+
+    public ArrayList<ReviewData> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<ReviewData> reviews) {
+        this.reviews = reviews;
     }
 
     @Override
@@ -109,19 +124,33 @@ public class MovieData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeDouble(voteAverage);
-        dest.writeString(title);
-        dest.writeString(posterPath);
-        dest.writeString(backdropPath);
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
+        dest.writeInt(this.id);
+        dest.writeDouble(this.voteAverage);
+        dest.writeString(this.title);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.backdropPath);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeStringList(this.trailers);
+        dest.writeTypedList(this.reviews);
     }
 
-    public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
+    protected MovieData(Parcel in) {
+        this.id = in.readInt();
+        this.voteAverage = in.readDouble();
+        this.title = in.readString();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.trailers = in.createStringArrayList();
+        this.reviews = in.createTypedArrayList(ReviewData.CREATOR);
+    }
+
+    public static final Creator<MovieData> CREATOR = new Creator<MovieData>() {
         @Override
-        public MovieData createFromParcel(Parcel in) {
-            return new MovieData(in);
+        public MovieData createFromParcel(Parcel source) {
+            return new MovieData(source);
         }
 
         @Override

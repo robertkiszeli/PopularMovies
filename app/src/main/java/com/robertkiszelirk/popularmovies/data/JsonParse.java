@@ -1,18 +1,20 @@
 package com.robertkiszelirk.popularmovies.data;
 
+import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
+import com.robertkiszelirk.popularmovies.data.ModelData.ReviewData;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /** JsonParse is responsible to parse the JSON strings to object[s] */
 
-class JsonParse {
+public class JsonParse {
 
     /** Parse the JSON string to ArrayList<MovieData> to store the movies required data
      * and returns the list */
-    static ArrayList<MovieData> jsonParseForMoviesList(String jsonString) throws JSONException{
+    public static ArrayList<MovieData> jsonParseForMoviesList(String jsonString) throws JSONException{
 
         ArrayList<MovieData> moviesList = new ArrayList<>();
 
@@ -31,13 +33,58 @@ class JsonParse {
                             movie.getString("poster_path"),
                             movie.getString("backdrop_path"),
                             movie.getString("overview"),
-                            movie.getString("release_date")
-                    );
-
+                            movie.getString("release_date"),
+                    null,
+                    null);
             moviesList.add(movieData);
 
         }
 
         return moviesList;
+    }
+
+    public static ArrayList<String> jsonParseForTrailersList(String trailersJsonData) throws JSONException{
+
+        ArrayList<String> trailersList = new ArrayList<>();
+
+        JSONObject trailerData = new JSONObject(trailersJsonData);
+
+        JSONArray trailerJsonArray = trailerData.getJSONArray("results");
+
+        for(int i = 0; i < trailerJsonArray.length(); i++){
+
+            JSONObject trailer = trailerJsonArray.getJSONObject(i);
+
+            if(trailer.getString("site").equals("YouTube")) {
+                trailersList.add(trailer.getString("key"));
+            }
+
+        }
+
+        return trailersList;
+    }
+
+    public static ArrayList<ReviewData> jsonParseForReviewsList(String reviewsJsonData) throws JSONException {
+
+        ArrayList<ReviewData> reviewsList = new ArrayList<>();
+
+        JSONObject reviewsData = new JSONObject(reviewsJsonData);
+
+        JSONArray reviewsJsonArray = reviewsData.getJSONArray("results");
+
+        for (int i = 0; i < reviewsJsonArray.length(); i++) {
+
+            JSONObject trailer = reviewsJsonArray.getJSONObject(i);
+
+            ReviewData reviewData = new ReviewData(
+                    trailer.getString("author"),
+                    trailer.getString("content")
+            );
+
+            reviewsList.add(reviewData);
+        }
+
+        return reviewsList;
+
     }
 }

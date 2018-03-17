@@ -47,7 +47,11 @@ public class GetReviewsData extends AsyncTask<String,Void,ArrayList<ReviewData>>
             e.printStackTrace();
         }
 
-        return reviewsList;
+            if ((reviewsList != null ? reviewsList.size() : 0) != 0){
+                return reviewsList;
+            }else{
+                return null;
+            }
     }
 
     /** When background task finished, the ArrayList<ReviewData> passed back to MovieDetails */

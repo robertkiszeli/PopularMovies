@@ -23,10 +23,10 @@ import java.util.ArrayList;
 
 public class TrailersRecyclerAdapter extends RecyclerView.Adapter<TrailersRecyclerAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
 
     //Passed trailers list
-    private ArrayList<String> trailersList;
+    private final ArrayList<String> trailersList;
 
     public TrailersRecyclerAdapter(Context context,ArrayList<String> trailersList){
         this.context = context;
@@ -59,7 +59,7 @@ public class TrailersRecyclerAdapter extends RecyclerView.Adapter<TrailersRecycl
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView trailerImage;
+        final ImageView trailerImage;
 
         ViewHolder(final View itemView) {
             super(itemView);

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class ReviewsRecyclerAdapter extends RecyclerView.Adapter<ReviewsRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<ReviewData> reviewsList;
+    private final ArrayList<ReviewData> reviewsList;
 
     public ReviewsRecyclerAdapter(ArrayList<ReviewData> reviewsList){
         this.reviewsList = reviewsList;
@@ -47,8 +47,8 @@ public class ReviewsRecyclerAdapter extends RecyclerView.Adapter<ReviewsRecycler
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView author;
-        TextView content;
+        final TextView author;
+        final TextView content;
 
         ViewHolder(final View itemView) {
             super(itemView);

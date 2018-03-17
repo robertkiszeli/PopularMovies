@@ -12,6 +12,25 @@ import java.util.ArrayList;
 
 public class JsonParse {
 
+    /** Parse the JSON string to MovieData to store the movie required data
+     * and returns */
+    public static MovieData jsonParseForMovie(String jsonString) throws JSONException{
+
+        JSONObject mainData = new JSONObject(jsonString);
+
+        return new MovieData(
+                        mainData.getInt("id"),
+                        mainData.getDouble("vote_average"),
+                        mainData.getString("title"),
+                        mainData.getString("poster_path"),
+                        mainData.getString("backdrop_path"),
+                        mainData.getString("overview"),
+                        mainData.getString("release_date"),
+                null,
+                null);
+
+    }
+
     /** Parse the JSON string to ArrayList<MovieData> to store the movies required data
      * and returns the list */
     public static ArrayList<MovieData> jsonParseForMoviesList(String jsonString) throws JSONException{
@@ -27,13 +46,13 @@ public class JsonParse {
             JSONObject movie = moviesJsonArray.getJSONObject(i);
 
             MovieData movieData = new MovieData(
-                            movie.getInt("id"),
-                            movie.getDouble("vote_average"),
-                            movie.getString("title"),
-                            movie.getString("poster_path"),
-                            movie.getString("backdrop_path"),
-                            movie.getString("overview"),
-                            movie.getString("release_date"),
+                    movie.getInt("id"),
+                    movie.getDouble("vote_average"),
+                    movie.getString("title"),
+                    movie.getString("poster_path"),
+                    movie.getString("backdrop_path"),
+                    movie.getString("overview"),
+                    movie.getString("release_date"),
                     null,
                     null);
             moviesList.add(movieData);

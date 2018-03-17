@@ -28,10 +28,10 @@ import java.util.ArrayList;
 
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
 
     //Passed movies list
-    private ArrayList<MovieData> moviesList;
+    private final ArrayList<MovieData> moviesList;
 
     public MoviesRecyclerAdapter(Context context,ArrayList<MovieData> moviesList){
         this.context = context;
@@ -64,7 +64,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView posterImage;
+        final ImageView posterImage;
 
         ViewHolder(final View itemView) {
             super(itemView);

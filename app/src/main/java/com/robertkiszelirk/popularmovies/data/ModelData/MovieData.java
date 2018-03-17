@@ -5,35 +5,36 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-/** MovieData is responsible to store one movie data, that is needed.
- *  The Parcelable is required to pass the MovieData object from MoviesList
- *  to MovieDetails.
+/**
+ * MovieData is responsible to store one movie data, that is needed.
+ * The Parcelable is required to pass the MovieData object from MoviesList
+ * to MovieDetails.
  */
 
 public class MovieData implements Parcelable {
 
     private int id;
 
-    private double voteAverage;
+    private final double voteAverage;
 
     private String title;
-    private String posterPath;
-    private String backdropPath;
-    private String overview;
-    private String releaseDate;
+    private final String posterPath;
+    private final String backdropPath;
+    private final String overview;
+    private final String releaseDate;
 
     private ArrayList<String> trailers = new ArrayList<>();
     private ArrayList<ReviewData> reviews = new ArrayList<>();
 
     public MovieData(int id,
-              double voteAverage,
-              String title,
-              String posterPath,
-              String backdropPath,
-              String overview,
-              String releaseDate,
-              ArrayList<String> trailers,
-              ArrayList<ReviewData> reviews){
+                     double voteAverage,
+                     String title,
+                     String posterPath,
+                     String backdropPath,
+                     String overview,
+                     String releaseDate,
+                     ArrayList<String> trailers,
+                     ArrayList<ReviewData> reviews) {
         this.id = id;
         this.voteAverage = voteAverage;
         this.title = title;
@@ -57,10 +58,6 @@ public class MovieData implements Parcelable {
         return voteAverage;
     }
 
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -73,48 +70,16 @@ public class MovieData implements Parcelable {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
     public String getBackdropPath() {
         return backdropPath;
-    }
-
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
     }
 
     public String getOverview() {
         return overview;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
     public String getReleaseDate() {
         return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public ArrayList<String> getTrailers() {
-        return trailers;
-    }
-
-    public void setTrailers(ArrayList<String> trailers) {
-        this.trailers = trailers;
-    }
-
-    public ArrayList<ReviewData> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(ArrayList<ReviewData> reviews) {
-        this.reviews = reviews;
     }
 
     @Override
@@ -135,7 +100,7 @@ public class MovieData implements Parcelable {
         dest.writeTypedList(this.reviews);
     }
 
-    protected MovieData(Parcel in) {
+    private MovieData(Parcel in) {
         this.id = in.readInt();
         this.voteAverage = in.readDouble();
         this.title = in.readString();

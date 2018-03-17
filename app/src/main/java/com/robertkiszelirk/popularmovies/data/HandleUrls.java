@@ -40,6 +40,28 @@ public class HandleUrls {
         return movieListUrl;
     }
 
+    /** Create single movie url based on movieId string */
+    public static URL createSingleMovieUrl(String movieId){
+
+        URL movieUrl = null;
+
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("http")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(movieId)
+                .appendQueryParameter("api_key", BuildConfig.API_KEY);
+
+        try{
+            movieUrl = new URL(builder.build().toString());
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return movieUrl;
+    }
+
     /** Create trailers list url based on movie id*/
     public static URL createTrailerUrl(String id) {
 

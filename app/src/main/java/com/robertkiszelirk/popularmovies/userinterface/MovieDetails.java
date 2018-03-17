@@ -5,26 +5,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.robertkiszelirk.popularmovies.R;
-import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetReviewsData;
-import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetTrailersData;
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
 import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
-import com.robertkiszelirk.popularmovies.data.ModelData.ReviewData;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForReviewList;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForTrailerList;
-import com.robertkiszelirk.popularmovies.uianddata.Adapters.ReviewsRecyclerAdapter;
-import com.robertkiszelirk.popularmovies.uianddata.SetVisibility;
-import com.robertkiszelirk.popularmovies.uianddata.Adapters.TrailersRecyclerAdapter;
-
-import java.util.ArrayList;
+import com.robertkiszelirk.popularmovies.uianddata.HandleFavorites;
+import com.robertkiszelirk.popularmovies.uianddata.SetData.SetReviews;
+import com.robertkiszelirk.popularmovies.uianddata.SetData.SetTrailers;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +26,7 @@ import butterknife.Unbinder;
 
 /** MovieDetails is responsible to show the passed movie required data */
 
-public class MovieDetails extends AppCompatActivity implements AsyncResponseForTrailerList,AsyncResponseForReviewList{
+public class MovieDetails extends AppCompatActivity{
 
     @BindView(R.id.movie_detail_backdrop) ImageView backdropImage;
     @BindView(R.id.movie_detail_poster) ImageView posterImage;
@@ -45,9 +39,11 @@ public class MovieDetails extends AppCompatActivity implements AsyncResponseForT
     @BindView(R.id.movie_trailer) RecyclerView trailers;
     @BindView(R.id.movie_reviews) RecyclerView reviews;
 
-    Unbinder unbinder;
+    @BindView(R.id.favorite_button) ImageButton favorite;
 
-    private SetVisibility setVisibility;
+    private Unbinder unbinder;
+
+    private HandleFavorites handleFavorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +52,14 @@ public class MovieDetails extends AppCompatActivity implements AsyncResponseForT
 
         unbinder = ButterKnife.bind(this);
 
-        setVisibility = new SetVisibility();
+        handleFavorites = new HandleFavorites(this);
 
         if(checkInternetConnection()) {
             Bundle data = getIntent().getExtras();
             // If passed data is not null load it
             if (data != null) {
                 // Get passed data
-                MovieData movieData = data.getParcelable(getString(R.string.passing_movie_parcelable_key));
+                final MovieData movieData = data.getParcelable(getString(R.string.passing_movie_parcelable_key));
                 if (movieData != null) {
 
                     Glide.with(this)
@@ -77,15 +73,40 @@ public class MovieDetails extends AppCompatActivity implements AsyncResponseForT
                     overviewText.setText(movieData.getOverview());
                     dateText.setText(getString(R.string.release_date_string, movieData.getReleaseDate()));
 
-                    // Get trailers id
-                    GetTrailersData getTrailersData = new GetTrailersData(this);
+                    // Get trailers
+                    SetTrailers setTrailers = new SetTrailers(this);
 
-                    getTrailersData.execute(String.valueOf(movieData.getId()));
+                    setTrailers.setData(String.valueOf(movieData.getId()),trailers);
 
-                    // Get reviews data
-                    GetReviewsData getReviewsData = new GetReviewsData(this);
+                    // Get reviews
+                    SetReviews setReviews = new SetReviews(this);
 
-                    getReviewsData.execute(String.valueOf(movieData.getId()));
+                    setReviews.setData(String.valueOf(movieData.getId()),reviews);
+
+                    // Set favorite icon
+                    if(handleFavorites.checkIfMovieIsFavorite(String.valueOf(movieData.getId()))){
+                        favorite.setImageResource(R.mipmap.ic_favorite_white_24dp);
+                    }else{
+                        favorite.setImageResource(R.mipmap.ic_favorite_border_white_24dp);
+                    }
+
+                    // Add(delete) movie to favorite
+                    favorite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(handleFavorites.checkIfMovieIsFavorite(String.valueOf(movieData.getId()))){
+
+                                handleFavorites.deleteFavoriteFromDatabase(String.valueOf(movieData.getId()));
+
+                                favorite.setImageResource(R.mipmap.ic_favorite_border_white_24dp);
+                            }else{
+
+                                handleFavorites.saveFavoriteToDatabase(String.valueOf(movieData.getId()),movieData.getTitle());
+
+                                favorite.setImageResource(R.mipmap.ic_favorite_white_24dp);
+                            }
+                        }
+                    });
 
                 } else {
                     // If passed data is null show message
@@ -99,44 +120,6 @@ public class MovieDetails extends AppCompatActivity implements AsyncResponseForT
             Toast.makeText(this,getString(R.string.movie_detail_no_connection_text),Toast.LENGTH_LONG).show();
             finish();
         }
-    }
-
-    // Load trailers thumbnail to trailers RecyclerView
-    @Override
-    public void processFinishTrailerData(ArrayList<String> trailerData) {
-
-        if(trailerData != null){
-
-            setVisibility.setVisible(trailers);
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-            trailers.setLayoutManager(layoutManager);
-
-            TrailersRecyclerAdapter trailersRecyclerAdapter = new TrailersRecyclerAdapter(this,trailerData);
-
-            trailers.setAdapter(trailersRecyclerAdapter);
-        }
-    }
-
-    // Load reviews to RecyclerView
-    @Override
-    public void processFinishReviewData(ArrayList<ReviewData> reviewData) {
-
-        if(reviewData != null){
-
-            setVisibility.setVisible(reviews);
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-            reviews.setLayoutManager(layoutManager);
-
-            ReviewsRecyclerAdapter reviewsRecyclerAdapter = new ReviewsRecyclerAdapter(reviewData);
-
-            reviews.setAdapter(reviewsRecyclerAdapter);
-
-        }
-
     }
 
     private boolean checkInternetConnection(){

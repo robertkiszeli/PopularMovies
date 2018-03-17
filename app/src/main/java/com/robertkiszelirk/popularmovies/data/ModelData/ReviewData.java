@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 public class ReviewData implements Parcelable {
 
-    private String author;
+    private final String author;
     private String content;
 
     public ReviewData(
@@ -20,10 +20,6 @@ public class ReviewData implements Parcelable {
 
     public String getAuthor() {
         return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getContent() {
@@ -43,9 +39,6 @@ public class ReviewData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.author);
         dest.writeString(this.content);
-    }
-
-    public ReviewData() {
     }
 
     private ReviewData(Parcel in) {

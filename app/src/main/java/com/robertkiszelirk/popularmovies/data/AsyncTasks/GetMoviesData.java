@@ -1,6 +1,7 @@
 package com.robertkiszelirk.popularmovies.data.AsyncTasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
 import com.robertkiszelirk.popularmovies.data.JsonParse;

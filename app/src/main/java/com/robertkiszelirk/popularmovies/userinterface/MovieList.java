@@ -3,6 +3,7 @@ package com.robertkiszelirk.popularmovies.userinterface;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.robertkiszelirk.popularmovies.R;
 import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetFavoritesData;
@@ -40,6 +42,8 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
 
     @BindView(R.id.movies_list_no_connection_text_view) TextView noConnection;
 
+    private GridLayoutManager gridLayoutManager;
+
     private SetVisibility setVisibility;
 
     private ArrayList<MovieData> moviesList;
@@ -60,7 +64,6 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         currentList = getString(R.string.movie_type_popular);
 
         if(checkInternetConnection()) {
-            //checkPermissions();
 
             // Set RecyclerView column numbers
             setRecyclerView();
@@ -102,6 +105,7 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
                         loadMoviesToRecyclerView();
                         setVisibility.setVisible(recyclerView);
                         setVisibility.setInvisible(progressBar);
+
                     } else {
                         getMoviesList(getString(R.string.movie_type_popular));
                         setVisibility.setVisible(recyclerView);
@@ -176,7 +180,7 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
 
         setVisibility.setInvisible(recyclerView);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,numberOfColumns());
+        gridLayoutManager = new GridLayoutManager(this,numberOfColumns());
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -263,6 +267,8 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         outState.putParcelableArrayList(getString(R.string.on_saved_instance_state_movies_list_key),moviesList);
     }
 
+
+
     private boolean checkInternetConnection(){
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = null;
@@ -294,7 +300,6 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
                 }
             }
         }
-
         super.onResume();
     }
 }

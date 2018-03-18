@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.uianddata.Adapters;
+package com.robertkiszelirk.popularmovies.uianddata.adapters;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.uianddata.Interfaces;
+package com.robertkiszelirk.popularmovies.uianddata.interfaces;
 
 import java.util.ArrayList;
 

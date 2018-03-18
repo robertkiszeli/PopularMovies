@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.data.DataBaseData;
+package com.robertkiszelirk.popularmovies.data.databasedata;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

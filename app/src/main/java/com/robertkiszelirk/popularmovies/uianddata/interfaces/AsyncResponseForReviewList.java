@@ -1,6 +1,6 @@
-package com.robertkiszelirk.popularmovies.uianddata.Interfaces;
+package com.robertkiszelirk.popularmovies.uianddata.interfaces;
 
-import com.robertkiszelirk.popularmovies.data.ModelData.ReviewData;
+import com.robertkiszelirk.popularmovies.data.modeldata.ReviewData;
 
 import java.util.ArrayList;
 

@@ -1,13 +1,13 @@
-package com.robertkiszelirk.popularmovies.uianddata.SetData;
+package com.robertkiszelirk.popularmovies.uianddata.setdata;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetTrailersData;
-import com.robertkiszelirk.popularmovies.uianddata.Adapters.TrailersRecyclerAdapter;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForTrailerList;
-import com.robertkiszelirk.popularmovies.uianddata.SetVisibility;
+import com.robertkiszelirk.popularmovies.data.asynctasks.GetTrailersData;
+import com.robertkiszelirk.popularmovies.uianddata.adapters.TrailersRecyclerAdapter;
+import com.robertkiszelirk.popularmovies.uianddata.interfaces.AsyncResponseForTrailerList;
 
 import java.util.ArrayList;
 
@@ -15,14 +15,17 @@ public class SetTrailers implements AsyncResponseForTrailerList {
 
     private final Context context;
     private RecyclerView trailersRecyclerView;
+    private Parcelable scrollPosition;
 
     public SetTrailers(Context context){
         this.context = context;
     }
 
-    public void setData(String id,RecyclerView trailersRecyclerView){
+    public void setData(String id, RecyclerView trailersRecyclerView, Parcelable scrollPosition){
 
         this.trailersRecyclerView = trailersRecyclerView;
+
+        this.scrollPosition = scrollPosition;
 
         GetTrailersData getTrailersData = new GetTrailersData(this);
 
@@ -35,10 +38,6 @@ public class SetTrailers implements AsyncResponseForTrailerList {
 
         if(trailerData != null){
 
-            SetVisibility setVisibility = new SetVisibility();
-
-            setVisibility.setVisible(trailersRecyclerView);
-
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
             trailersRecyclerView.setLayoutManager(layoutManager);
@@ -46,6 +45,8 @@ public class SetTrailers implements AsyncResponseForTrailerList {
             TrailersRecyclerAdapter trailersRecyclerAdapter = new TrailersRecyclerAdapter(context,trailerData);
 
             trailersRecyclerView.setAdapter(trailersRecyclerAdapter);
+
+            trailersRecyclerView.getLayoutManager().onRestoreInstanceState(scrollPosition);
         }
     }
 }

@@ -11,18 +11,18 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.robertkiszelirk.popularmovies.R;
-import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetFavoritesData;
-import com.robertkiszelirk.popularmovies.data.AsyncTasks.GetMoviesData;
-import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
+import com.robertkiszelirk.popularmovies.data.asynctasks.GetFavoritesData;
+import com.robertkiszelirk.popularmovies.data.asynctasks.GetMoviesData;
+import com.robertkiszelirk.popularmovies.data.modeldata.MovieData;
 import com.robertkiszelirk.popularmovies.uianddata.HandleFavorites;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForFavoriteMoviesList;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForMoviesList;
-import com.robertkiszelirk.popularmovies.uianddata.Adapters.MoviesRecyclerAdapter;
+import com.robertkiszelirk.popularmovies.uianddata.interfaces.AsyncResponseForFavoriteMoviesList;
+import com.robertkiszelirk.popularmovies.uianddata.interfaces.AsyncResponseForMoviesList;
+import com.robertkiszelirk.popularmovies.uianddata.adapters.MoviesRecyclerAdapter;
 import com.robertkiszelirk.popularmovies.uianddata.SetVisibility;
 
 import java.util.ArrayList;
@@ -52,6 +52,10 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
 
     private int numberOfFavoriteMovies = 0;
 
+    private Parcelable scrollPosition = null;
+
+    private ViewTreeObserver.OnGlobalLayoutListener viewListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +72,26 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
             // Set RecyclerView column numbers
             setRecyclerView();
 
+            viewListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    setVisibility.setInvisible(progressBar);
+                    setVisibility.setInvisible(noConnection);
+                    setVisibility.setVisible(recyclerView);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(scrollPosition);
+                }
+            };
+
             // Check if orientation has changed
             if (savedInstanceState != null) {
 
-                if("favorite".equals(savedInstanceState.getString("currentList"))){
+                scrollPosition = savedInstanceState.getParcelable("scrollPosition");
+
+                if("favorite".equals(savedInstanceState.getString(getString(R.string.on_saved_instance_state_current_list_type)))){
 
                     moviesList = savedInstanceState.getParcelableArrayList(getString(R.string.on_saved_instance_state_movies_list_key));
 
-                    numberOfFavoriteMovies = savedInstanceState.getInt("numberOfFavoriteMovies",0);
+                    numberOfFavoriteMovies = savedInstanceState.getInt(getString(R.string.on_saved_instance_state_number_of_favorite_movies),0);
 
                     HandleFavorites handleFavorites = new HandleFavorites(this);
 
@@ -84,31 +100,24 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
                     // Check if favorite movies database changed
                     if(numberOfFavoriteMovies != favoriteMoviesIdList.size()) {
                         numberOfFavoriteMovies = favoriteMoviesIdList.size();
-
-                        setVisibility.setInvisible(recyclerView);
-                        setVisibility.setVisible(progressBar);
-                        setRecyclerView();
                         getMoviesList(getString(R.string.movie_type_favorite));
                     }else{
                         if (moviesList != null) {
+                            setVisibility.setInvisible(recyclerView);
+                            setVisibility.setVisible(progressBar);
                             loadMoviesToRecyclerView();
-                            setVisibility.setVisible(recyclerView);
-                            setVisibility.setInvisible(progressBar);
                         } else {
                             getMoviesList(getString(R.string.movie_type_popular));
-                            setVisibility.setVisible(recyclerView);
                         }
                     }
                 }else {
                     moviesList = savedInstanceState.getParcelableArrayList(getString(R.string.on_saved_instance_state_movies_list_key));
                     if (moviesList != null) {
+                        setVisibility.setInvisible(recyclerView);
+                        setVisibility.setVisible(progressBar);
                         loadMoviesToRecyclerView();
-                        setVisibility.setVisible(recyclerView);
-                        setVisibility.setInvisible(progressBar);
-
                     } else {
                         getMoviesList(getString(R.string.movie_type_popular));
-                        setVisibility.setVisible(recyclerView);
                     }
                 }
 
@@ -135,9 +144,6 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         switch (item.getItemId()){
             case R.id.popular_movies:
                 if (checkInternetConnection()) {
-                    setVisibility.setInvisible(recyclerView);
-                    setVisibility.setVisible(progressBar);
-                    setRecyclerView();
                     getMoviesList(getString(R.string.movie_type_popular));
                 } else {
                     setVisibility.setInvisible(recyclerView);
@@ -147,9 +153,6 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
                 break;
             case R.id.top_rated_movies:
                 if (checkInternetConnection()) {
-                    setVisibility.setInvisible(recyclerView);
-                    setVisibility.setVisible(progressBar);
-                    setRecyclerView();
                     getMoviesList(getString(R.string.movie_type_top_rated));
                 } else {
                     setVisibility.setInvisible(recyclerView);
@@ -159,9 +162,6 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
                 break;
             case R.id.favorite_movies:
                 if (checkInternetConnection()) {
-                    setVisibility.setInvisible(recyclerView);
-                    setVisibility.setVisible(progressBar);
-                    setRecyclerView();
                     getMoviesList(getString(R.string.movie_type_favorite));
                     currentList = getString(R.string.movie_type_favorite);
                 } else {
@@ -178,9 +178,9 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
     // Set RecyclerView grid, columns
     private void setRecyclerView() {
 
-        setVisibility.setInvisible(recyclerView);
-
         gridLayoutManager = new GridLayoutManager(this,numberOfColumns());
+
+        recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -203,6 +203,9 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
     // Get movies list in the background
     private void getMoviesList(String listType) {
 
+        setVisibility.setInvisible(recyclerView);
+        setVisibility.setVisible(progressBar);
+
         currentList = listType;
 
         if(!listType.equals(getString(R.string.movie_type_favorite))) {
@@ -219,9 +222,9 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
 
             numberOfFavoriteMovies = favoriteMoviesIdList.size();
 
-            GetFavoritesData getFavoritesData = new GetFavoritesData(this);
+            GetFavoritesData getFavoriteData = new GetFavoritesData(this);
 
-            getFavoritesData.execute(favoriteMoviesIdList);
+            getFavoriteData.execute(favoriteMoviesIdList);
 
         }
     }
@@ -232,9 +235,7 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         if(moviesList != null) {
             this.moviesList = moviesList;
             loadMoviesToRecyclerView();
-            setVisibility.setInvisible(progressBar);
-            setVisibility.setInvisible(noConnection);
-            setVisibility.setVisible(recyclerView);
+
         }
     }
 
@@ -244,11 +245,10 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         if(moviesList != null) {
             this.moviesList = moviesList;
             loadMoviesToRecyclerView();
-            setVisibility.setInvisible(progressBar);
-            setVisibility.setInvisible(noConnection);
-            setVisibility.setVisible(recyclerView);
         }
     }
+
+
 
     // Load movies list to the RecyclerView
     private void loadMoviesToRecyclerView() {
@@ -256,18 +256,28 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         MoviesRecyclerAdapter moviesRecyclerAdapter = new MoviesRecyclerAdapter(this,moviesList);
 
         recyclerView.setAdapter(moviesRecyclerAdapter);
+
+        // Set scroll position after orientation change
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(viewListener);
+
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(viewListener);
+                scrollPosition = null;
+            }
+        }, 500);
     }
 
     // Save movies list if orientation changes
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("currentList",currentList);
-        outState.putInt("numberOfFavoriteMovies",numberOfFavoriteMovies);
+        outState.putString(getString(R.string.on_saved_instance_state_current_list_type),currentList);
+        outState.putInt(getString(R.string.on_saved_instance_state_number_of_favorite_movies),numberOfFavoriteMovies);
         outState.putParcelableArrayList(getString(R.string.on_saved_instance_state_movies_list_key),moviesList);
+        outState.putParcelable("scrollPosition",recyclerView.getLayoutManager().onSaveInstanceState());
     }
-
-
 
     private boolean checkInternetConnection(){
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -294,7 +304,7 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
 
                     setVisibility.setInvisible(recyclerView);
                     setVisibility.setVisible(progressBar);
-                    setRecyclerView();
+                    //setRecyclerView();
                     getMoviesList(getString(R.string.movie_type_favorite));
                     currentList = getString(R.string.movie_type_favorite);
                 }
@@ -302,4 +312,5 @@ public class MovieList extends AppCompatActivity implements AsyncResponseForMovi
         }
         super.onResume();
     }
+
 }

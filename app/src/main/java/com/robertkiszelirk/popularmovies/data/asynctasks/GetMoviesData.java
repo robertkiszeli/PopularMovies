@@ -1,12 +1,11 @@
-package com.robertkiszelirk.popularmovies.data.AsyncTasks;
+package com.robertkiszelirk.popularmovies.data.asynctasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
 import com.robertkiszelirk.popularmovies.data.JsonParse;
-import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForMoviesList;
+import com.robertkiszelirk.popularmovies.data.modeldata.MovieData;
+import com.robertkiszelirk.popularmovies.uianddata.interfaces.AsyncResponseForMoviesList;
 
 import java.net.URL;
 import java.util.ArrayList;

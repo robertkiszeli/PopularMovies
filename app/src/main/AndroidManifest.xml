@@ -23,7 +23,7 @@
             android:name=".userinterface.MovieDetails"
             android:theme="@style/DetailsTheme"/>
         <provider
-            android:name="com.robertkiszelirk.popularmovies.data.DataBaseData.FavoritesContentProvider"
+            android:name="com.robertkiszelirk.popularmovies.data.databasedata.FavoritesContentProvider"
             android:authorities="com.robertkiszelirk.popularmovies"
             android:exported="false"/>
     </application>

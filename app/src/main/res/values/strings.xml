@@ -14,5 +14,7 @@
     <string name="options_menu_favorite_movies_text">Favorite movies</string>
     <string name="movie_list_no_connection_text">No Internet Connection.\nTurn on connection\nand  restart application.</string>
     <string name="movie_detail_no_connection_text">No Internet Connection.\nTurn on connection and  restart application.</string>
+    <string name="on_saved_instance_state_number_of_favorite_movies">numberOfFavoriteMovies</string>
+    <string name="on_saved_instance_state_current_list_type">currentList</string>
 
 </resources>

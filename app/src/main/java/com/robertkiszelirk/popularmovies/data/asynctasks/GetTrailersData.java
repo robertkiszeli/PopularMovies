@@ -1,10 +1,10 @@
-package com.robertkiszelirk.popularmovies.data.AsyncTasks;
+package com.robertkiszelirk.popularmovies.data.asynctasks;
 
 import android.os.AsyncTask;
 
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
 import com.robertkiszelirk.popularmovies.data.JsonParse;
-import com.robertkiszelirk.popularmovies.uianddata.Interfaces.AsyncResponseForTrailerList;
+import com.robertkiszelirk.popularmovies.uianddata.interfaces.AsyncResponseForTrailerList;
 import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;

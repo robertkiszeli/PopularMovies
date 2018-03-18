@@ -1,7 +1,7 @@
 package com.robertkiszelirk.popularmovies.data;
 
-import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
-import com.robertkiszelirk.popularmovies.data.ModelData.ReviewData;
+import com.robertkiszelirk.popularmovies.data.modeldata.MovieData;
+import com.robertkiszelirk.popularmovies.data.modeldata.ReviewData;
 
 import org.json.JSONArray;
 import org.json.JSONException;

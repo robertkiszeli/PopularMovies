@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.data.DataBaseData;
+package com.robertkiszelirk.popularmovies.data.databasedata;
 
 import android.net.Uri;
 import android.provider.BaseColumns;

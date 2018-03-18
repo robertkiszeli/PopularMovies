@@ -4,21 +4,23 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.robertkiszelirk.popularmovies.R;
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
-import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
+import com.robertkiszelirk.popularmovies.data.modeldata.MovieData;
 import com.robertkiszelirk.popularmovies.uianddata.HandleFavorites;
-import com.robertkiszelirk.popularmovies.uianddata.SetData.SetReviews;
-import com.robertkiszelirk.popularmovies.uianddata.SetData.SetTrailers;
+import com.robertkiszelirk.popularmovies.uianddata.setdata.SetReviews;
+import com.robertkiszelirk.popularmovies.uianddata.setdata.SetTrailers;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +29,8 @@ import butterknife.Unbinder;
 /** MovieDetails is responsible to show the passed movie required data */
 
 public class MovieDetails extends AppCompatActivity{
+
+    @BindView(R.id.main_scroll_view) ScrollView scrollView;
 
     @BindView(R.id.movie_detail_backdrop) ImageView backdropImage;
     @BindView(R.id.movie_detail_poster) ImageView posterImage;
@@ -45,6 +49,10 @@ public class MovieDetails extends AppCompatActivity{
 
     private HandleFavorites handleFavorites;
 
+    Parcelable trailerPosition;
+
+    Parcelable reviewPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +69,25 @@ public class MovieDetails extends AppCompatActivity{
                 // Get passed data
                 final MovieData movieData = data.getParcelable(getString(R.string.passing_movie_parcelable_key));
                 if (movieData != null) {
+                    // Handle orientation changes
+                    if(savedInstanceState != null){
+                        final int[] position = savedInstanceState.getIntArray("scroll_position");
+                        if(position != null)
+                            scrollView.post(new Runnable() {
+                                public void run() {
+                                    scrollView.scrollTo(position[0], position[1]);
+                                }
+                            });
+                        trailerPosition = savedInstanceState.getParcelable("trailer_position");
+                        reviewPosition = savedInstanceState.getParcelable("review_position");
+                    }else{
+                        scrollView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                            }
+                        });
+                    }
 
                     Glide.with(this)
                             .load(HandleUrls.createImageUrl(movieData.getBackdropPath()))
@@ -76,12 +103,12 @@ public class MovieDetails extends AppCompatActivity{
                     // Get trailers
                     SetTrailers setTrailers = new SetTrailers(this);
 
-                    setTrailers.setData(String.valueOf(movieData.getId()),trailers);
+                    setTrailers.setData(String.valueOf(movieData.getId()),trailers,trailerPosition);
 
                     // Get reviews
                     SetReviews setReviews = new SetReviews(this);
 
-                    setReviews.setData(String.valueOf(movieData.getId()),reviews);
+                    setReviews.setData(String.valueOf(movieData.getId()),reviews,reviewPosition);
 
                     // Set favorite icon
                     if(handleFavorites.checkIfMovieIsFavorite(String.valueOf(movieData.getId()))){
@@ -131,6 +158,13 @@ public class MovieDetails extends AppCompatActivity{
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("scroll_position",
+                new int[]{ scrollView.getScrollX(), scrollView.getScrollY()});
+        outState.putParcelable("trailer_position",trailers.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable("review_position",reviews.getLayoutManager().onSaveInstanceState());
+    }
 
     @Override
     protected void onDestroy() {

@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.data.ModelData;
+package com.robertkiszelirk.popularmovies.data.modeldata;
 
 import android.os.Parcel;
 import android.os.Parcelable;

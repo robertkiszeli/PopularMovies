@@ -1,4 +1,4 @@
-package com.robertkiszelirk.popularmovies.uianddata.Adapters;
+package com.robertkiszelirk.popularmovies.uianddata.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.robertkiszelirk.popularmovies.R;
 import com.robertkiszelirk.popularmovies.data.HandleUrls;
-import com.robertkiszelirk.popularmovies.data.ModelData.MovieData;
+import com.robertkiszelirk.popularmovies.data.modeldata.MovieData;
 import com.robertkiszelirk.popularmovies.userinterface.MovieDetails;
 
 import java.util.ArrayList;

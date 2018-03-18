@@ -3,7 +3,7 @@ package com.robertkiszelirk.popularmovies.uianddata;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import com.robertkiszelirk.popularmovies.data.DataBaseData.FavoriteContract;
+import com.robertkiszelirk.popularmovies.data.databasedata.FavoriteContract;
 import java.util.ArrayList;
 
 /** HandleFavorites is responsible to handle favorite database */
